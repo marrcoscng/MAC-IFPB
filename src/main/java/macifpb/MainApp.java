@@ -27,46 +27,53 @@ public class MainApp extends Application {
         inicializarGrafoExemplo();
 
         BorderPane root = new BorderPane();
-        root.setPadding(new Insets(10));
+        root.setPadding(new Insets(15));
+        root.setStyle("-fx-background-color: #f8f9fa;");
 
-        // Painel Superior de Controle
+        // Painel Superior de Controlo
         HBox barControle = new HBox(15);
         barControle.setAlignment(Pos.CENTER_LEFT);
-        barControle.setPadding(new Insets(10));
-        barControle.setStyle("-fx-background-color: #2c3e50; -fx-background-radius: 8px;");
+        barControle.setPadding(new Insets(15, 20, 15, 20));
+        barControle.setStyle("-fx-background-color: #1e293b; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);");
 
         Label lblOrigem = new Label("Origem:");
-        lblOrigem.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+        lblOrigem.setStyle("-fx-text-fill: #f1f5f9; -fx-font-weight: bold; -fx-font-size: 13px;");
         comboOrigem = new ComboBox<>();
         comboOrigem.getItems().addAll(grafo.getVertices());
         comboOrigem.getSelectionModel().selectFirst();
+        comboOrigem.setPrefWidth(180);
 
         Label lblDestino = new Label("Destino:");
-        lblDestino.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+        lblDestino.setStyle("-fx-text-fill: #f1f5f9; -fx-font-weight: bold; -fx-font-size: 13px;");
         comboDestino = new ComboBox<>();
         comboDestino.getItems().addAll(grafo.getVertices());
         if (grafo.getVertices().size() > 1) {
             comboDestino.getSelectionModel().select(1);
         }
+        comboDestino.setPrefWidth(180);
 
-        Button btnTraçarRota = new Button("Calcular Rota");
-        btnTraçarRota.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
-        btnTraçarRota.setOnAction(e -> desenharGrafoECalcular());
+        Button btnTracarRota = new Button("Calcular Rota");
+        btnTracarRota.setStyle("-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-background-radius: 6px; -fx-cursor: hand; -fx-padding: 8px 16px;");
+        btnTracarRota.setOnAction(e -> desenharGrafoECalcular());
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
         labelDistancia = new Label("Distância total: -");
-        labelDistancia.setStyle("-fx-text-fill: #ecf0f1; -fx-font-size: 14px; -fx-font-weight: bold;");
+        labelDistancia.setStyle("-fx-text-fill: #38bdf8; -fx-font-size: 14px; -fx-font-weight: bold;");
 
-        barControle.getChildren().addAll(lblOrigem, comboOrigem, lblDestino, comboDestino, btnTraçarRota, labelDistancia);
+        barControle.getChildren().addAll(lblOrigem, comboOrigem, lblDestino, comboDestino, btnTracarRota, spacer, labelDistancia);
         root.setTop(barControle);
 
-        // Área Central do Mapa Visual
+        // Área Central do Mapa Visual ampliada
         paneMapa = new Pane();
-        paneMapa.setStyle("-fx-background-color: #ecf0f1; -fx-background-radius: 8px;");
+        paneMapa.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-border-color: #e2e8f0; -fx-border-radius: 10px; -fx-border-width: 1px;");
         root.setCenter(paneMapa);
 
-        BorderPane.setMargin(paneMapa, new Insets(10, 0, 0, 0));
+        BorderPane.setMargin(paneMapa, new Insets(15, 0, 0, 0));
 
-        Scene scene = new Scene(root, 800, 600);
+        // Janela espaçosa (1300x850) para afastar bem os nós
+        Scene scene = new Scene(root, 1300, 850);
         primaryStage.setTitle("Mini GPS - Algoritmo de Dijkstra");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -77,52 +84,55 @@ public class MainApp extends Application {
     private void inicializarGrafoExemplo() {
         grafo = new Grafo();
 
-        Vertice vA = new Vertice("A", "Centro", 150, 150);
-        Vertice vB = new Vertice("B", "Bairro Norte", 350, 100);
-        Vertice vC = new Vertice("C", "Zona Industrial", 600, 150);
-        Vertice vD = new Vertice("D", "Bairro Sul", 200, 380);
-        Vertice vE = new Vertice("E", "Terminal Urbano", 450, 350);
-        Vertice vF = new Vertice("F", "Universidade", 650, 420);
+        // 19 Vértices com coordenadas bem distantes e isoladas
+        Vertice vA = new Vertice("A", "Centro", 250, 260);
+        Vertice vB = new Vertice("B", "Bairro Norte", 520, 140);
+        Vertice vC = new Vertice("C", "Zona Industrial", 920, 200);
+        Vertice vD = new Vertice("D", "Bairro Sul", 320, 580);
+        Vertice vE = new Vertice("E", "Terminal Urbano", 640, 520);
+        Vertice vF = new Vertice("F", "Universidade", 1080, 680);
 
-        // Novos vértices com coordenadas ÚNICAS (espalhadas pelo mapa)
-        Vertice vG = new Vertice("G", "Mercado Preço A", 300, 240);
-        Vertice vH = new Vertice("H", "Cinema", 500, 180);
-        Vertice vI = new Vertice("I", "Padaria", 150, 270);
-        Vertice vJ = new Vertice("J", "Ginásio", 300, 480);
+        Vertice vG = new Vertice("G", "Mercado Preço A", 460, 380);
+        Vertice vH = new Vertice("H", "Cinema", 780, 280);
+        Vertice vI = new Vertice("I", "Padaria", 120, 440);
+        Vertice vJ = new Vertice("J", "Ginásio", 440, 750);
 
-        // Adicionando TODOS os vértices ao grafo
-        grafo.adicionarVertice(vA);
-        grafo.adicionarVertice(vB);
-        grafo.adicionarVertice(vC);
-        grafo.adicionarVertice(vD);
-        grafo.adicionarVertice(vE);
-        grafo.adicionarVertice(vF);
-        grafo.adicionarVertice(vG);
-        grafo.adicionarVertice(vH);
-        grafo.adicionarVertice(vI);
-        grafo.adicionarVertice(vJ);
+        Vertice vK = new Vertice("K", "Hospital Central", 580, 350);
+        Vertice vL = new Vertice("L", "Parque Municipal", 120, 750);
+        Vertice vM = new Vertice("M", "Shopping Boulevard", 840, 450);
+        Vertice vN = new Vertice("N", "Posto de Gasolina", 360, 90);
+        Vertice vO = new Vertice("O", "Estação Ferroviária", 1120, 420);
+        Vertice vP = new Vertice("P", "Biblioteca Pública", 200, 130);
+        Vertice vQ = new Vertice("Q", "Prefeitura", 520, 660);
+        Vertice vR = new Vertice("R", "Aeroporto Regional", 1220, 750);
+        Vertice vS = new Vertice("S", "Teatro Municipal", 760, 90);
 
-        grafo.adicionarAresta(vA, vB, 5);
-        grafo.adicionarAresta(vA, vD, 8);
-        grafo.adicionarAresta(vA, vI, 3);
+        // Adicionar vértices ao grafo
+        grafo.adicionarVertice(vA); grafo.adicionarVertice(vB); grafo.adicionarVertice(vC);
+        grafo.adicionarVertice(vD); grafo.adicionarVertice(vE); grafo.adicionarVertice(vF);
+        grafo.adicionarVertice(vG); grafo.adicionarVertice(vH); grafo.adicionarVertice(vI);
+        grafo.adicionarVertice(vJ); grafo.adicionarVertice(vK); grafo.adicionarVertice(vL);
+        grafo.adicionarVertice(vM); grafo.adicionarVertice(vN); grafo.adicionarVertice(vO);
+        grafo.adicionarVertice(vP); grafo.adicionarVertice(vQ); grafo.adicionarVertice(vR);
+        grafo.adicionarVertice(vS);
 
-        grafo.adicionarAresta(vB, vC, 12);
-        grafo.adicionarAresta(vB, vE, 6);
-        grafo.adicionarAresta(vB, vG, 4);
+        // Conexões e pesos em km
+        grafo.adicionarAresta(vA, vB, 5); grafo.adicionarAresta(vA, vD, 8); grafo.adicionarAresta(vA, vI, 3);
+        grafo.adicionarAresta(vB, vC, 12); grafo.adicionarAresta(vB, vE, 6); grafo.adicionarAresta(vB, vG, 4);
+        grafo.adicionarAresta(vC, vH, 5); grafo.adicionarAresta(vC, vF, 7);
+        grafo.adicionarAresta(vD, vI, 4); grafo.adicionarAresta(vD, vE, 4); grafo.adicionarAresta(vD, vJ, 6);
+        grafo.adicionarAresta(vE, vF, 9); grafo.adicionarAresta(vE, vH, 4); grafo.adicionarAresta(vE, vJ, 5);
+        grafo.adicionarAresta(vG, vH, 6); grafo.adicionarAresta(vG, vA, 4);
 
-        grafo.adicionarAresta(vC, vH, 5);
-        grafo.adicionarAresta(vC, vF, 7);
-
-        grafo.adicionarAresta(vD, vI, 4);
-        grafo.adicionarAresta(vD, vE, 4);
-        grafo.adicionarAresta(vD, vJ, 6);
-
-        grafo.adicionarAresta(vE, vF, 9);
-        grafo.adicionarAresta(vE, vH, 4);
-        grafo.adicionarAresta(vE, vJ, 5);
-
-        grafo.adicionarAresta(vG, vH, 6);
-        grafo.adicionarAresta(vG, vA, 4);
+        grafo.adicionarAresta(vN, vB, 3); grafo.adicionarAresta(vN, vA, 4);
+        grafo.adicionarAresta(vP, vA, 2); grafo.adicionarAresta(vP, vI, 3);
+        grafo.adicionarAresta(vK, vG, 5); grafo.adicionarAresta(vK, vE, 4);
+        grafo.adicionarAresta(vS, vH, 3); grafo.adicionarAresta(vS, vC, 6);
+        grafo.adicionarAresta(vM, vE, 5); grafo.adicionarAresta(vM, vC, 4);
+        grafo.adicionarAresta(vQ, vE, 3); grafo.adicionarAresta(vQ, vJ, 4);
+        grafo.adicionarAresta(vL, vD, 7);
+        grafo.adicionarAresta(vO, vM, 5); grafo.adicionarAresta(vO, vR, 8);
+        grafo.adicionarAresta(vR, vF, 6);
     }
 
     private void desenharGrafoECalcular() {
@@ -145,7 +155,7 @@ public class MainApp extends Application {
             }
         }
 
-        // Desenhar Arestas
+        // 1. Desenhar Arestas com maior espaçamento para os textos
         Set<String> arestasDesenhadas = new HashSet<>();
         for (Aresta a : grafo.getArestas()) {
             String chave = Math.min(a.getOrigem().hashCode(), a.getDestino().hashCode()) + "-" +
@@ -156,38 +166,56 @@ public class MainApp extends Application {
 
             boolean fazParteDoCaminho = eArestaDoCaminho(a, caminho);
 
-            Line linha = new Line(a.getOrigem().getX(), a.getOrigem().getY(), a.getDestino().getX(), a.getDestino().getY());
-            linha.setStroke(fazParteDoCaminho ? Color.web("#e74c3c") : Color.web("#bdc3c7"));
+            double x1 = a.getOrigem().getX();
+            double y1 = a.getOrigem().getY();
+            double x2 = a.getDestino().getX();
+            double y2 = a.getDestino().getY();
+
+            Line linha = new Line(x1, y1, x2, y2);
+            linha.setStroke(fazParteDoCaminho ? Color.web("#ef4444") : Color.web("#cbd5e1"));
             linha.setStrokeWidth(fazParteDoCaminho ? 4 : 2);
 
-            double posX = (a.getOrigem().getX() + a.getDestino().getX()) / 2;
-            double posY = (a.getOrigem().getY() + a.getDestino().getY()) / 2;
-            Text txtPeso = new Text(posX, posY - 5, String.format("%.0f km", a.getPeso()));
-            txtPeso.setStyle("-fx-font-size: 11px; -fx-fill: #7f8c8d; -fx-font-weight: bold;");
+            // Afastamento maior do texto de km em relação à linha
+            double posX = (x1 + x2) / 2;
+            double posY = (y1 + y2) / 2;
+            double dx = x2 - x1;
+            double dy = y2 - y1;
+            double len = Math.sqrt(dx * dx + dy * dy);
+            if (len > 0) {
+                posX += (-dy / len) * 16;
+                posY += (dx / len) * 16;
+            }
+
+            Text txtPeso = new Text(posX, posY, String.format("%.0f km", a.getPeso()));
+            txtPeso.setStyle("-fx-font-size: 11px; -fx-fill: #475569; -fx-font-weight: bold;");
 
             paneMapa.getChildren().addAll(linha, txtPeso);
         }
 
-        // Desenhar Vértices
+        // 2. Desenhar Vértices
         for (Vertice v : grafo.getVertices()) {
             boolean noCaminho = caminho.contains(v);
 
-            Circle circulo = new Circle(v.getX(), v.getY(), 18);
+            Circle circulo = new Circle(v.getX(), v.getY(), 16);
             if (v.equals(origem)) {
-                circulo.setFill(Color.web("#27ae60"));
+                circulo.setFill(Color.web("#10b981")); // Verde
             } else if (v.equals(destino)) {
-                circulo.setFill(Color.web("#c0392b"));
+                circulo.setFill(Color.web("#dc2626")); // Vermelho
             } else if (noCaminho) {
-                circulo.setFill(Color.web("#f39c12"));
+                circulo.setFill(Color.web("#f59e0b")); // Laranja
             } else {
-                circulo.setFill(Color.web("#3498db"));
+                circulo.setFill(Color.web("#3b82f6")); // Azul
             }
 
             circulo.setStroke(Color.WHITE);
-            circulo.setStrokeWidth(2);
+            circulo.setStrokeWidth(2.5);
 
-            Text txtNome = new Text(v.getX() - 25, v.getY() + 32, v.getNome());
-            txtNome.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-fill: #2c3e50;");
+            Text txtNome = new Text(v.getNome());
+            txtNome.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-fill: #1e293b;");
+
+            double textWidth = v.getNome().length() * 5.5;
+            txtNome.setX(v.getX() - textWidth / 2);
+            txtNome.setY(v.getY() + 30);
 
             paneMapa.getChildren().addAll(circulo, txtNome);
         }
